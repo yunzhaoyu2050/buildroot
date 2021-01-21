@@ -68,7 +68,7 @@ function main()
 	BUILDROOT_OUTPUT_DIR=${BUILDROOT_DIR}/output
 	TOP_DIR=$(dirname ${BUILDROOT_DIR})
 
-	source ${TOP_DIR}/board/rk3308/.BoardConfig.mk
+	source ${TOP_DIR}/board/rockchip/rk3308/.BoardConfig.mk
 	echo Top of tree: ${TOP_DIR}
 
 	# Set croot alias
@@ -88,7 +88,7 @@ function main()
 	if [ -n "$1" ]; then
 		TARGET_BUILD_CONFIG=${DEFCONFIG_ARRAY[0]}
 	else
-		choose_board # choose rk3308 board
+		choose_board
 	fi
 	[ -n "$TARGET_BUILD_CONFIG" ] || return
 

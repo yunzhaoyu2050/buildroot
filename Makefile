@@ -36,7 +36,11 @@ SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 # or avoid confusing packages that can use the O=<dir> syntax for out-of-tree
 # build by preventing it from being forwarded to sub-make calls.
 ifneq ("$(origin O)", "command line")
+ifneq ($(TARGET_OUTPUT_DIR),)
+O := $(TARGET_OUTPUT_DIR)
+else
 O := $(CURDIR)/output
+endif
 endif
 
 # Check if the current Buildroot execution meets all the pre-requisites.
@@ -1024,8 +1028,9 @@ defconfig: $(BUILD_DIR)/buildroot-config/conf outputmakefile
 define percent_defconfig
 # Override the BR2_DEFCONFIG from COMMON_CONFIG_ENV with the new defconfig
 %_defconfig: $(BUILD_DIR)/buildroot-config/conf $(1)/configs/%_defconfig outputmakefile
+	$(TOPDIR)/build/defconfig_hook.py -m $(1)/configs/$$@ $(BASE_DIR)/.board-buildroot_config \
 	@$$(COMMON_CONFIG_ENV) BR2_DEFCONFIG=$(1)/configs/$$@ \
-		$$< --defconfig=$(1)/configs/$$@ $$(CONFIG_CONFIG_IN)
+		$$< --defconfig=$(BASE_DIR)/.board-buildroot_config$$(CONFIG_CONFIG_IN)
 endef
 $(eval $(foreach d,$(call reverse,$(TOPDIR) $(BR2_EXTERNAL_DIRS)),$(call percent_defconfig,$(d))$(sep)))
 
